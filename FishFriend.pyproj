@@ -23,6 +23,51 @@
   <ItemGroup>
     <Compile Include="FishFriend.py" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="assets\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="assets\Albacore.png" />
+    <Content Include="assets\Anchovy.png" />
+    <Content Include="assets\Bream.png" />
+    <Content Include="assets\Bullhead.png" />
+    <Content Include="assets\Carp.png" />
+    <Content Include="assets\Catfish.png" />
+    <Content Include="assets\Chub.png" />
+    <Content Include="assets\Dorado.png" />
+    <Content Include="assets\Eel.png" />
+    <Content Include="assets\fall.png" />
+    <Content Include="assets\Flounder.png" />
+    <Content Include="assets\Halibut.png" />
+    <Content Include="assets\Herring.png" />
+    <Content Include="assets\Largemouth Bass.png" />
+    <Content Include="assets\Lingcod.png" />
+    <Content Include="assets\Midnight Carp.png" />
+    <Content Include="assets\Octopus.png" />
+    <Content Include="assets\Perch.png" />
+    <Content Include="assets\Pike.png" />
+    <Content Include="assets\Pufferfish.png" />
+    <Content Include="assets\Rainbow Trout.png" />
+    <Content Include="assets\Red Mullet.png" />
+    <Content Include="assets\Red Snapper.png" />
+    <Content Include="assets\Salmon.png" />
+    <Content Include="assets\Sardine.png" />
+    <Content Include="assets\Sea Cucumber.png" />
+    <Content Include="assets\Shad.png" />
+    <Content Include="assets\Smallmouth Bass.png" />
+    <Content Include="assets\spring.png" />
+    <Content Include="assets\Squid.png" />
+    <Content Include="assets\Sturgeon.png" />
+    <Content Include="assets\summer.png" />
+    <Content Include="assets\Sunfish.png" />
+    <Content Include="assets\Super Cucumber.png" />
+    <Content Include="assets\Tiger Trout.png" />
+    <Content Include="assets\Tilapia.png" />
+    <Content Include="assets\Tuna.png" />
+    <Content Include="assets\Walleye.png" />
+    <Content Include="assets\winter.png" />
+    <Content Include="assets\Woodskip.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
        Visual Studio and specify your pre- and post-build commands in
