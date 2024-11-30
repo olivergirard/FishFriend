@@ -11,6 +11,7 @@
     <OutputPath>.</OutputPath>
     <Name>FishFriend</Name>
     <RootNamespace>FishFriend</RootNamespace>
+    <IsWindowsApplication>True</IsWindowsApplication>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
