@@ -67,7 +67,6 @@
     <Content Include="assets\Tuna.png" />
     <Content Include="assets\Walleye.png" />
     <Content Include="assets\winter.png" />
-    <Content Include="assets\Woodskip.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
