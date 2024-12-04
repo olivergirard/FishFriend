@@ -5,24 +5,31 @@ import matplotlib.colors as mcolors
 import pandas as pd
 import array as arr
 
-from matplotlib.offsetbox import AnnotationBbox, TextArea, VPacker, HPacker
-from matplotlib.widgets import Slider, RadioButtons, CheckButtons
+from matplotlib.offsetbox import AnnotationBbox, TextArea, VPacker, HPacker, OffsetImage
+from matplotlib.widgets import Slider
 from matplotlib.patches import PathPatch
 from matplotlib.path import Path
+from matplotlib import patches
+
+from CustomButtons import *
 
 price_colors = ['black', 'gray', 'gold', 'darkviolet']
+
 location_states = {
-    "Pond": False,
-    "Ocean": False,
-    "Forest River": False,
-    "Town River": False,
-    "Mountain Lake": False
-}
+    'Forest Pond': False,
+    'Ocean': False,
+    'Forest River': False,
+    'Town River': False,
+    'Mountain Lake': False
+    }
 
 selected_price_type = 'Standard Price'
 selected_season = 'Spring'
 
 current_tooltip = None
+
+fish_axes = []
+fish_rectangle = None
 
 pond_vertices = [(65, 107), (69, 107), (70, 108), (72, 108), (73, 109), (74, 109), (75, 110), (76, 110), (77, 111), (78, 112), 
                  (78, 116), (77, 117), (76, 118), (75, 119), (69, 119), (68, 118), (66, 118), (65, 117), (64, 117), (63, 116), 
@@ -92,6 +99,9 @@ def on_sidebar_hover(event):
     tooltip_found = False
 
     for ax_i, info in zip(axes, images_info):
+
+        ax_i.zorder = 6
+
         if event.inaxes == ax_i:
             tooltip_found = True
             x, y = event.xdata, event.ydata
@@ -103,7 +113,7 @@ def on_sidebar_hover(event):
                 elif selected_price_type == 'Angler Price':
                     prices = info['angler_prices']
 
-                tooltip_texts = [TextArea(info["tooltip_text"], textprops = dict(size = 12, ha = "left", va = "baseline"))]
+                tooltip_texts = [TextArea(info['tooltip_text'], textprops = dict(size = 12, ha = "left", va = "baseline"))]
                 price_texts = [TextArea("Price:", textprops = dict(color = 'black', size = 12, ha = "left", va = "baseline"))]
 
                 for i, price in enumerate(prices):
@@ -127,21 +137,206 @@ def on_sidebar_hover(event):
                     pad=0.5
                 )
 
+                ax_i.zorder = 10
+
+                if "Forest Pond" in info['location']:
+                     pond_patch.set_visible(True)
+                else:
+                     pond_patch.set_visible(False)
+
+                if "Ocean" in info['location']:
+                    ocean_patch.set_visible(True)
+                else:
+                    ocean_patch.set_visible(False)
+
+                if "Forest River" in info['location']:
+                    forest_river_patch.set_visible(True)
+                else:
+                    forest_river_patch.set_visible(False)
+
+                if "Town River" in info['location']:
+                    town_river_patch.set_visible(True)
+                else:
+                    town_river_patch.set_visible(False)
+
+                if "Mountain Lake" in info['location']:
+                    mountain_lake_patch.set_visible(True)
+                else:
+                     mountain_lake_patch.set_visible(False)
+
                 if current_tooltip is not None:
                     current_tooltip.set_visible(False)
                     current_tooltip.remove()
 
-                ax_i.zorder = 10
                 ax_i.add_artist(tooltip_annotation)
                 current_tooltip = tooltip_annotation
                 tooltip.set_visible(True)
                 event.canvas.draw_idle()
 
     if not tooltip_found and current_tooltip is not None:
+
+        pond_patch.set_visible(False)
+        ocean_patch.set_visible(False)
+        forest_river_patch.set_visible(False)
+        town_river_patch.set_visible(False)
+        mountain_lake_patch.set_visible(False)
+
         current_tooltip.set_visible(False)
         current_tooltip.remove()
         current_tooltip = None
         event.canvas.draw_idle()
+
+def on_fish_hover(event):
+    global current_tooltip
+    tooltip_found = False
+
+    for ax_i, info in fish_axes_data.items():
+        ax_i.zorder = 6
+
+    for ax_i, info in fish_axes_data.items():
+
+        if event.inaxes == ax_i:
+            tooltip_found = True
+            x, y = event.xdata, event.ydata
+            if x is not None and y is not None:
+
+                if selected_price_type == 'Standard Price':
+                    prices = info['standard_prices']
+                elif selected_price_type == 'Fisher Price':
+                    prices = info['fisher_prices']
+                elif selected_price_type == 'Angler Price':
+                    prices = info['angler_prices']
+
+                tooltip_texts = [TextArea(info['tooltip_text'], textprops = dict(size = 12, ha = "left", va = "baseline"))]
+                price_texts = [TextArea("Price:", textprops = dict(color = 'black', size = 12, ha = "left", va = "baseline"))]
+
+                for i, price in enumerate(prices):
+                    color = price_colors[i % len(price_colors)]
+                    price_texts.append(TextArea(" " + price, textprops=dict(color = color, size = 12, ha = "left", va = "baseline")))
+                    if i < 3:
+                        price_texts.append(TextArea(",", textprops = dict(color = 'black', size = 12, ha = "left")))
+
+                price_box = HPacker(children = price_texts, align = "left")
+                all_texts = tooltip_texts + [price_box]
+                tooltip_box = VPacker(children = all_texts, align = "left", pad = 5)
+                
+                tooltip_annotation = AnnotationBbox(tooltip_box, (x, y), xybox = (50, 50), xycoords = 'data', boxcoords = 'offset points', frameon = True, pad = 0.5, zorder = 10)
+                
+                ax_i.zorder = 10
+
+                if current_tooltip is not None:
+                    current_tooltip.set_visible(False)
+                    current_tooltip.remove()
+
+                ax_i.add_artist(tooltip_annotation)
+                current_tooltip = tooltip_annotation
+                event.canvas.draw_idle()
+                return
+
+    if not tooltip_found and current_tooltip is not None:
+        current_tooltip.set_visible(False)
+        current_tooltip.remove()
+        current_tooltip = None
+        event.canvas.draw_idle()
+
+def on_patch_click(event):
+    global fish_axes, fish_rectangle, current_tooltip
+
+    patches = {
+        'Pond': pond_patch,
+        'Ocean': ocean_patch,
+        'Forest River': forest_river_patch,
+        'Town River': town_river_patch,
+        'Mountain Lake': mountain_lake_patch
+        }
+
+    for name, patch in patches.items():
+        if patch.contains_point((event.x, event.y)):
+            show_fish_images(name, event.x / fig.dpi, event.y / fig.dpi)
+            return
+
+    for ax in fish_axes:
+        ax.remove()
+    
+    fish_axes = []
+
+    if fish_rectangle is not None:
+        fig.patches.remove(fish_rectangle)
+        fish_rectangle = None
+
+    if current_tooltip is not None:
+        current_tooltip.set_visible(False)
+        current_tooltip.remove()
+        current_tooltip = None
+
+    fig.canvas.draw_idle()
+
+def show_fish_images(patch_name, x_pos, y_pos):
+    global fish_axes, fish_rectangle, current_tooltip, fish_axes_data
+
+    for ax in fish_axes:
+        ax.remove()
+        
+    fish_axes = []
+
+    if fish_rectangle is not None:
+        fig.patches.remove(fish_rectangle)
+        fish_rectangle = None
+
+    if current_tooltip is not None:
+        current_tooltip.set_visible(False)
+        current_tooltip.remove()
+        current_tooltip = None
+
+    filtered_images = [
+        info for info in full_images_info
+        if patch_name in info['location']
+    ]
+
+    fig_width, fig_height = fig.get_size_inches()
+    norm_x = x_pos / fig_width
+    norm_y = y_pos / fig_height
+
+    fish_axes = []
+    fish_axes_data = {}
+
+    num_images = len(filtered_images)
+    images_per_row = 5
+    image_width = 0.05
+    image_height = 0.05
+
+    rows = (num_images // images_per_row) + (1 if num_images % images_per_row > 0 else 0)
+
+    x_start = norm_x - (images_per_row / 2) * image_width
+    y_start = norm_y - rows * (image_height + 0.02)
+    x_start = max(0, min(x_start, 1 - image_width * images_per_row))
+    y_start = max(0, min(y_start, 1 - image_height * rows))
+
+    rect_width = min(image_width / 1.5 * images_per_row, 1 - x_start)
+    rect_height = image_height * rows
+
+    fish_rectangle = patches.Rectangle((x_start, y_start + 0.05), rect_width + 0.015, rect_height * 1.5, transform = fig.transFigure, color = 'white', alpha = 0.6, zorder = 5)
+    fig.patches.append(fish_rectangle)
+
+    for i, info in enumerate(filtered_images):
+        row = i // images_per_row
+        col = i % images_per_row
+
+        y_start = norm_y - row * (image_height + 0.02)
+
+        ax_i = fig.add_axes([x_start + col * image_width / 1.5, y_start, image_width, image_height])
+        image = mpimg.imread(info['path'])
+        ax_i.imshow(image)
+        ax_i.axis("off")
+        ax_i.zorder = 6
+        fish_axes_data[ax_i] = info
+
+        fish_axes.append(ax_i)
+
+    fig.canvas.mpl_connect("motion_notify_event", on_fish_hover)
+
+    fig.canvas.draw_idle()
+
 
 def update_price_type(label):
     global selected_price_type
@@ -152,14 +347,24 @@ def update_season(label):
     global selected_season, images_info, current_tooltip
 
     selected_season = label
+
     map_location = "assets\\" + selected_season + ".png"
     map_image = mpimg.imread(map_location)
     map_ax.imshow(map_image, origin="upper")
 
-    filtered_images = [
-        info for info in images_info
-        if selected_season in info["season"]
-    ]
+    visible_locations = [loc for loc, state in location_states.items() if state]
+
+    if visible_locations:
+        filtered_images = [
+            info for info in full_images_info
+            if all(loc in info['location'] for loc in visible_locations) and selected_season in info['season']
+        ]
+    else:
+        filtered_images = [
+            info for info in full_images_info
+            if selected_season in info['season']
+        ]
+
     images_info = filtered_images
 
     if current_tooltip is not None:
@@ -173,15 +378,44 @@ def update_locations(label):
     global images_info, current_tooltip
 
     location_states[label] = not location_states[label]
+
     visible_locations = [loc for loc, state in location_states.items() if state]
 
     if visible_locations:
         filtered_images = [
-            info for info in images_info
-            if any(loc in info["location"] for loc in visible_locations)
+            info for info in full_images_info
+            if all(loc in info['location'] for loc in visible_locations) and selected_season in info['season']
         ]
     else:
-        filtered_images = full_images_info
+        filtered_images = [
+            info for info in full_images_info
+            if selected_season in info['season']
+        ]
+
+        if 'Forest Pond' in visible_locations:
+            pond_patch.set_visible(True)
+        else:
+            pond_patch.set_visible(False)
+
+        if 'Ocean' in visible_locations:
+            ocean_patch.set_visible(True)
+        else:
+            ocean_patch.set_visible(False)
+
+        if 'Forest River' in visible_locations:
+            forest_river_patch.set_visible(True)
+        else:
+            forest_river_patch.set_visible(False)
+
+        if 'Town River' in visible_locations:
+            town_river_patch.set_visible(True)
+        else:
+            town_river_patch.set_visible(False)
+
+        if 'Mountain Lake' in visible_locations:
+            mountain_lake_patch.set_visible(True)
+        else:
+            mountain_lake_patch.set_visible(False)
 
     images_info = filtered_images
 
@@ -200,7 +434,7 @@ def update_display(filtered_images):
 
     for i, info in enumerate(filtered_images):
         if i < len(axes):
-            image = mpimg.imread(info["path"])
+            image = mpimg.imread(info['path'])
             axes[i].imshow(image)
             axes[i].axis("off")
             axes[i].set_visible(True)
@@ -273,8 +507,8 @@ if __name__ == "__main__":
 
     full_images_info = images_info.copy()
 
-    fig, ax = plt.subplots(figsize = (16, 9)) 
-    plt.subplots_adjust(left = 0.1, right = 0.85, top = 0.95, bottom = 0.05)
+    fig, ax = plt.subplots(figsize = (16, 9), num = 'FishFriend') 
+    plt.subplots_adjust(left = -0.1, right = 0.85, top = 0.95, bottom = 0.05)
     ax.axis("off")
 
     num_images = len(images_info)
@@ -286,38 +520,23 @@ if __name__ == "__main__":
     scroll_slider.valtext.set_visible(False)
     scroll_slider.on_changed(update_scroll)
 
-    price_ax = fig.add_axes([0.825, 0.15, 0.15, 0.15])
+    price_ax = fig.add_axes([0.8, 0.15, 0.15, 0.15])
     price_ax.zorder = 1
-    price_buttons = RadioButtons(price_ax, ('Standard Price', 'Fisher Price', 'Angler Price'))
+    price_buttons = CustomRadioButtons(price_ax, ('Standard Price', 'Fisher Price', 'Angler Price'), callback = update_price_type)
 
-    for r in price_buttons.labels: 
-        r.set_fontsize(12)
-
-    price_buttons.on_clicked(update_price_type)
-
-    season_ax = fig.add_axes([0.425, 0.15, 0.15, 0.15])
+    season_ax = fig.add_axes([0.4, 0.15, 0.15, 0.15])
     season_ax.zorder = 1
-    season_buttons = RadioButtons(season_ax, ('Spring', 'Summer', 'Fall', 'Winter'))
+    season_buttons = CustomRadioButtons(season_ax, ('Spring', 'Summer', 'Fall', 'Winter'), callback = update_season)
 
-    for r in season_buttons.labels: 
-        r.set_fontsize(12)
-
-    season_buttons.on_clicked(update_season)
-
-    water_ax = fig.add_axes([0.625, 0.15, 0.15, 0.15])
+    water_ax = fig.add_axes([0.6, 0.15, 0.15, 0.15])
+    water_buttons = CustomCheckButtons(water_ax, ('Forest Pond', 'Ocean', 'Forest River', 'Town River', 'Mountain Lake'), callback = update_locations)
     water_ax.zorder = 1
-    water_buttons = CheckButtons(water_ax, list(location_states.keys()), list(location_states.values()))
-   
-    for r in water_buttons.labels: 
-        r.set_fontsize(12)
-
-    water_buttons.on_clicked(update_locations)
 
     image_artists = []
-    tooltips = []
+    fish_tooltips = []
     for ax_i, info in zip(axes, images_info):
         ax_i.axis("off")
-        img = mpimg.imread(info["path"])
+        img = mpimg.imread(info['path'])
         artist = ax_i.imshow(img, origin = "upper")
         image_artists.append(artist)
 
@@ -326,7 +545,7 @@ if __name__ == "__main__":
         tooltip.set_visible(False)
         ax_i.add_artist(tooltip)
         ax_i.zorder = 5
-        tooltips.append(tooltip)
+        fish_tooltips.append(tooltip)
 
     fig.canvas.mpl_connect("motion_notify_event", on_sidebar_hover)
 
@@ -349,13 +568,15 @@ if __name__ == "__main__":
     town_river_patch.set_visible(False)
     mountain_lake_patch.set_visible(False)
 
-    update_display(images_info)
+    logo_ax = fig.add_axes([-0.075, 0.225, 0.5, 0.5])
+    logo_ax.axis("off")
+    logo_location = "assets\\Logo.jpg"
+    logo_image = mpimg.imread(logo_location)
+    logo_ax.imshow(logo_image, origin = "upper")
+
+    fig.canvas.mpl_connect("button_press_event", on_patch_click)
+
+    update_season(selected_season)
 
     map_ax.set_aspect('equal')
     plt.show()
-
-### TODO: Pick up at Week 4 in Final Project Proposal. This involves:
-###           - Creating tooltips for bodies of water that involve more fish images. Expect lots of VPacker and HPacker logic.
-###           - Reapplying the logic of on_sidebar_hover to the new axes in the image tooltip. This is probably best done in another function.
-
-### TODO: The visualization still needs a cool logo.
