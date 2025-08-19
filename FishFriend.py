@@ -98,6 +98,17 @@ def on_sidebar_hover(event):
     global current_tooltip
     tooltip_found = False
 
+    patches = {
+        'Forest Pond': pond_patch,
+        'Ocean': ocean_patch,
+        'Forest River': forest_river_patch,
+        'Town River': town_river_patch,
+        'Mountain Lake': mountain_lake_patch
+    }
+
+    for location, patch in patches.items():
+        patch.set_visible(location in location_states and location_states[location])
+
     for ax_i, info in zip(axes, images_info):
 
         ax_i.zorder = 6
@@ -182,8 +193,20 @@ def on_fish_hover(event):
     global current_tooltip
     tooltip_found = False
 
+    patches = {
+        'Forest Pond': pond_patch,
+        'Ocean': ocean_patch,
+        'Forest River': forest_river_patch,
+        'Town River': town_river_patch,
+        'Mountain Lake': mountain_lake_patch
+    }
+
+    for location, patch in patches.items():
+        patch.set_visible(location in location_states and location_states[location])
+
     for ax_i, info in fish_axes_data.items():
         ax_i.zorder = 6
+
 
     for ax_i, info in fish_axes_data.items():
 
@@ -235,12 +258,15 @@ def on_patch_click(event):
     global fish_axes, fish_rectangle, current_tooltip
 
     patches = {
-        'Pond': pond_patch,
+        'Forest Pond': pond_patch,
         'Ocean': ocean_patch,
         'Forest River': forest_river_patch,
         'Town River': town_river_patch,
         'Mountain Lake': mountain_lake_patch
     }
+
+    for location, patch in patches.items():
+        patch.set_visible(location in location_states and location_states[location])
 
     for name, patch in patches.items():
         if patch.contains_point((event.x, event.y)):
