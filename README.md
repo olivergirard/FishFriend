@@ -1,8 +1,8 @@
-# FishFriend
-FishFriend is an interactive, data-driven application that makes *Stardew Valley* fishing gameplay more efficient and accessible, especially for first-time players. This application helps users visualize data relating to the fish in *Stardew Valley*, including information such as where and when a fish can be caught, how much a fish can sell for, and much more. This application was constructed as a final project for CS43900: Introduction to Data Visualization. It makes use of Python's Matplotlib and Pandas libraries. Any relevant assets and data were collected directly from the [Stardew Valley Wiki](https://stardewvalleywiki.com/Stardew_Valley_Wiki) and compiled into a spreadsheet.
+# Fish Friend
+Fish Friend is an interactive, data-driven application that makes *Stardew Valley* fishing gameplay more efficient and accessible, especially for first-time players. This application helps users visualize data relating to the fish in *Stardew Valley*, including information such as where and when a fish can be caught, how much a fish can sell for, and much more. This application was constructed as a final project for CS43900: Introduction to Data Visualization. It makes use of Python's Matplotlib and Pandas libraries. Any relevant assets and data were collected directly from the [Stardew Valley Wiki](https://stardewvalleywiki.com/Stardew_Valley_Wiki) and compiled into a spreadsheet.
 
 ## Execution
-FishFriend can be run directly from the included `.sln` file, or from the `FishFriend.exe` file at `FishFriend\dist\FishFriend.exe`.
+Fish Friend can be run directly from the included `.sln` file, or from the `FishFriend.exe` file at `FishFriend\dist\FishFriend.exe`.
 
 ## Features
 ### Seasons
@@ -17,7 +17,7 @@ Fish can be filtered by location. Multiple locations can be selected at a time. 
   <img src="https://github.com/user-attachments/assets/303d9df0-e417-4c4c-ad60-93061275e68a?raw=true" alt="Fish can be filtered by location."/>
 </p>
 
-A location can also be selected to determine what fish can be caught at that location. Further information on these fish can be gathered by hovering over them with the tooltip. I find this to be the most helpful feature within FishFriend.
+A location can also be selected to determine what fish can be caught at that location. Further information on these fish can be gathered by hovering over them with the tooltip. I find this to be the most helpful feature within Fish Friend.
 <p align="center">
   <img src="https://github.com/user-attachments/assets/322d6095-3ae8-48af-8358-e8e4a05ead6d?raw=true" alt="A location can be selected."/>
 </p>
