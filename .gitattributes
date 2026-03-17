@@ -1,4 +1,5 @@
-README.md linguist-vendored
+*.md linguist-vendored
+*.toc linguist-vendored
 
 ###############################################################################
 # Set default behavior to automatically normalize line endings.
