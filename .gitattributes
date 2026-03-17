@@ -1,8 +1,5 @@
 README.md linguist-vendored
 
-* linguist-vendored
-*.py linguist-vendored=false
-
 ###############################################################################
 # Set default behavior to automatically normalize line endings.
 ###############################################################################
