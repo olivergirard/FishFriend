@@ -62,6 +62,6 @@
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
 
+*.py linguist-language=Python
 *.md linguist-detectable=false
-**.html linguist-detectable=false
-**.toc linguist-detectable=false
+*.toc linguist-detectable=false
