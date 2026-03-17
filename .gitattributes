@@ -1,5 +1,4 @@
-* linguist-detectable
-README.md linguist-detectable=false
+README.md linguist-vendored
 
 * linguist-vendored
 *.py linguist-vendored=false
