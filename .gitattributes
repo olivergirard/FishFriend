@@ -1,3 +1,6 @@
+* linguist-vendored
+*.py linguist-vendored=false
+
 ###############################################################################
 # Set default behavior to automatically normalize line endings.
 ###############################################################################
@@ -61,7 +64,3 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
-
-*.py linguist-language=Python
-*.md linguist-detectable=false
-*.toc linguist-detectable=false
