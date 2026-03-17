@@ -1,5 +1,5 @@
-*.md linguist-vendored
-*.toc linguist-vendored
+* linguist-vendored
+*.py linguist-vendored=false
 
 ###############################################################################
 # Set default behavior to automatically normalize line endings.
