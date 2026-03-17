@@ -62,7 +62,6 @@
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
 
-*.md linguist-documentation=false
-*.md linguist-detectable
-**.toc linguist-documentation=false
-**.toc linguist-detectable
+*.md linguist-detectable=false
+**.html linguist-detectable=false
+**.toc linguist-detectable=false
