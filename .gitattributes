@@ -1,6 +1,6 @@
 * linguist-vendored
 *.py linguist-vendored=false
-*.md linguist-detectable=false
+README.md linguist-detectable=false
 
 ###############################################################################
 # Set default behavior to automatically normalize line endings.
